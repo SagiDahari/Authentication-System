@@ -1,0 +1,18 @@
+<div class="container d-flex justify-content-center align-items-center" style="height: 50vh;">
+    <form class="form-signin" [formGroup]="form" (submit)="submit()"> 
+        <h1 class="h3 mb-3 fw-normal">Log-In</h1>
+       
+        <input formControlName="email" type="email" class="form-control mb-2"  placeholder="name@example.com" required autofocus>
+        <input formControlName="password" type="password" class="form-control mb-2"  placeholder="Password" required>
+
+        <div class="mb-3">
+            <a routerLink="/forgot">Forgot password?</a>
+        </div>
+
+        <div *ngIf="cls" class="alert alert-{{cls}}" role="alert">
+            {{message}}
+        </div>
+       
+        <button class="btn btn-primary w-100 py-2" type="submit">Log-In</button>
+      </form>
+    </div>

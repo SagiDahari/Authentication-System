@@ -1,0 +1,14 @@
+<div class="container d-flex justify-content-center align-items-center" style="height: 50vh;">
+<form class="form-signin" [formGroup]="form" (submit)="submit()" style="width: 100%; max-width: 400px;"> 
+    <h1 class="h3 mb-3 fw-normal">Please Register</h1>
+    <input formControlName="first_name"  class="form-control mb-2"  placeholder="First Name" required>
+    <input formControlName="last_name"  class="form-control mb-2"  placeholder="Last Name" required>
+    <input formControlName="email" type="email" class="form-control mb-2"  placeholder="name@example.com" required autofocus>
+    <input formControlName="password" type="password" class="form-control mb-2"  placeholder="Password" required>
+    <input formControlName="password_confirmed" type="password" class="form-control mb-2"  placeholder="Password Confirmed" required> 
+    <button class="btn btn-primary w-100 py-2 mb-2" type="submit">Submit</button>
+    <div *ngIf="cls" class="alert alert-{{cls}} alert-container" role="alert">
+        {{message}}
+    </div>
+  </form>
+</div>

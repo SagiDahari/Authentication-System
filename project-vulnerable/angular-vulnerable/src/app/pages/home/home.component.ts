@@ -1,0 +1,98 @@
+import { HttpClient } from '@angular/common/http';
+import { Component, OnInit, Renderer2 } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { Auth } from 'src/app/classes/auth';
+
+@Component({
+  selector: 'app-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.css']
+})
+export class HomeComponent implements OnInit {
+  form!: FormGroup;
+  message: SafeHtml = '';
+  cls = '';
+  alertMessage = '';
+  customers: any[] = [];
+  auth = false;
+  showCustomers = false;
+
+  constructor(
+    private http: HttpClient,
+    private formBuilder: FormBuilder,
+    private sanitizer: DomSanitizer,
+    private renderer: Renderer2
+  ) { }
+
+  ngOnInit(): void {
+    this.form = this.formBuilder.group({
+      idNumber: '',
+      first_name: '',
+      last_name: ''
+    });
+
+    this.http.get("http://localhost:8000/api/user")
+      .subscribe(
+        (user: any) => {
+          this.message = `Welcome ${user.first_name} ${user.last_name}`;
+          this.auth = true;
+          Auth.authEmitter.emit(true);
+        },
+        () => {
+          this.message = 'You are not logged in.';
+          Auth.authEmitter.emit(false);
+        }
+      );
+  }
+
+  loadCustomers(): void {
+    this.http.get<any[]>('http://localhost:8000/api/customer')
+      .subscribe(customers => {
+        this.customers = customers.map(customer => ({
+          ...customer,
+          idNumber: this.sanitizer.bypassSecurityTrustHtml(customer.idNumber),
+          first_name: this.sanitizer.bypassSecurityTrustHtml(customer.first_name),
+          last_name: this.sanitizer.bypassSecurityTrustHtml(customer.last_name)
+        }));
+        this.executeScripts(); // Execute scripts after loading customers
+      });
+  }
+
+  addCustomer(): void {
+    this.http.post('http://localhost:8000/api/customer', this.form.getRawValue())
+      .subscribe(() => {
+        this.cls = 'success';
+        this.alertMessage = 'A customer has been added';
+        this.toggleShowCustomers(); // Refresh the customer list after adding a new customer
+      }, (error) => {
+        this.cls = 'danger';
+        this.alertMessage = error.error.message;
+      });
+  }
+
+  toggleShowCustomers(): void {
+    this.showCustomers = !this.showCustomers;
+    if (this.showCustomers) {
+      this.loadCustomers(); // Load customers only when displaying them
+    }
+  }
+
+  executeScripts(): void {
+    setTimeout(() => {
+      const scripts = document.getElementsByTagName('script');
+      for (let i = 0; i < scripts.length; i++) {
+        const script = scripts[i];
+        const newScript = this.renderer.createElement('script');
+        newScript.type = 'text/javascript';
+        if (script.innerHTML) {
+          newScript.innerHTML = script.innerHTML;
+        } else if (script.src) {
+          newScript.src = script.src;
+        }
+        script.parentNode?.replaceChild(newScript, script);
+      }
+    }, 0);
+  }
+}
+

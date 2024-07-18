@@ -1,0 +1,45 @@
+<div class="container mt-5">
+    <h1 class="text-center">{{message}}</h1>
+  
+    <div *ngIf="auth">
+      <div class="text-center">
+        <h2>Enter a new customer</h2>
+      </div>
+      <div class="d-flex justify-content-center">
+        <form class="form-signin w-50" [formGroup]="form" (submit)="addCustomer()">  
+          <input formControlName="idNumber" type="text" class="form-control mb-2" placeholder="Customer's ID" required>
+          <input formControlName="first_name" type="text" class="form-control mb-2" placeholder="Customer's Name" required>
+          <input formControlName="last_name" type="text" class="form-control mb-2" placeholder="Customer's Last Name" required>
+          <button class="btn btn-primary mt-2 w-100" type="submit">Add Customer</button>
+          <div *ngIf="cls" class="alert alert-{{cls}} alert-container mt-2" role="alert">
+            {{alertMessage}}
+          </div>
+        </form>
+      </div>
+      <div class="d-flex justify-content-center mt-4">
+        <button class="btn btn-secondary" (click)="toggleShowCustomers()">
+          {{ showCustomers ? 'Hide Customers' : 'Show Customers' }}
+        </button>
+      </div>
+  
+      <div *ngIf="showCustomers" class="mt-5">
+        <table class="table table-striped table-bordered text-center">
+          <thead class="thead-dark">
+            <tr>
+              <th>ID</th>
+              <th>First Name</th>
+              <th>Last Name</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let customer of customers">
+              <td>{{ customer['idNumber'] }}</td>
+              <td>{{ customer['first_name'] }}</td>
+              <td>{{ customer['last_name'] }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  

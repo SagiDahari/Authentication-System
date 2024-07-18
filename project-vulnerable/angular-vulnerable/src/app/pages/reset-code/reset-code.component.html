@@ -1,0 +1,10 @@
+<div class="container d-flex justify-content-center align-items-center" style="height: 50vh;">
+    <form class="form-signin" [formGroup]="form" (submit)="submit()"> 
+        <h1 class="h3 mb-3 fw-normal">Please enter the code you received</h1>
+        <div *ngIf="cls" class="alert alert-{{cls}}" role="alert">
+            {{message}}
+        </div>
+        <input formControlName="code" type="text" class="form-control mb-2"  placeholder="code" required>
+        <button class="btn btn-primary w-100 py-2" type="submit">Submit</button>
+      </form>
+    </div>
